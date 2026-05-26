@@ -1,6 +1,10 @@
 package org.example.countryapi;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.aspectj.internal.lang.annotation.ajcDeclareParents;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationStartupAware;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -11,17 +15,32 @@ import java.util.List;
 public class CountryService {
 
     private final RestClient restClient;
+    private final CountryRepository repository;
 
-    public CountryService(){
+    public CountryService(CountryRepository repository){
+        this.repository = repository;
         restClient = RestClient.builder()
                 .baseUrl("https://restcountries.com/v3.1")
                 .build();
     }
 
-    public List<Country> findAll(){
-        return restClient.get()
-                .uri("/all?fields=name,region")
+    @EventListener
+    public void importCountries(ApplicationStartedEvent event){
+        JsonNode countries = restClient.get()
+                .uri("/all?fields=name,region,population")
                 .retrieve()
-                .body();
+                .body(JsonNode.class);
+
+        for(JsonNode country : countries){
+            String countryName = country.get("name").get("common").toString();
+            String countryRegion = country.get("region").toString();
+            long countryPopulation = country.get("population").asLong();
+
+            Country newCountry = new Country(countryName,countryRegion,countryPopulation);
+            repository.save(newCountry);
+        }
+        System.out.println("Jobs done!");
     }
+
+
 }

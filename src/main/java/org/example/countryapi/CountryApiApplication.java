@@ -8,6 +8,7 @@ public class CountryApiApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CountryApiApplication.class, args);
+
     }
 
 }

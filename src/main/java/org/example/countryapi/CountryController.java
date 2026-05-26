@@ -16,10 +16,7 @@ public class CountryController {
         this.countryService = countryService;
     }
 
-    @GetMapping("")
-    List<Country> findAll() {
-        return countryService.findAll();
-    }
+
 
 
 }
