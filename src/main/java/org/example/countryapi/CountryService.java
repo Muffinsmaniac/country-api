@@ -3,8 +3,10 @@ package org.example.countryapi;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+
 
 import java.util.List;
 
@@ -29,14 +31,22 @@ public class CountryService {
                 .body(JsonNode.class);
 
         for(JsonNode country : countries){
-            String countryName = country.get("name").get("common").toString();
-            String countryRegion = country.get("region").toString();
+            String countryName = country.get("name").get("common").asText();
+            String countryRegion = country.get("region").asText();
             long countryPopulation = country.get("population").asLong();
 
             Country newCountry = new Country(countryName,countryRegion,countryPopulation);
             repository.save(newCountry);
         }
         System.out.println("Jobs done!");
+    }
+
+    public List<Country> getAllCountries(){
+        return repository.findAll();
+    }
+
+    public List<Country> getCountriesNameSorted(){
+        return repository.findAll(Sort.by("name"));
     }
 
 
