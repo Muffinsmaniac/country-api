@@ -49,5 +49,16 @@ public class CountryService {
         return repository.findAll(Sort.by("name"));
     }
 
+    public List<Country> getRegionNameSorted(String region){
+        return repository.findByRegion(region, Sort.by("name"));
+    }
+
+    public List<Country> getCountriesPopulationSorted(){
+        return repository.findAll(Sort.by("population"));
+    }
+
+    public List<Country> getRegionPopulationSorted(String region){
+        return repository.findByRegion(region, Sort.by("population"));
+    }
 
 }

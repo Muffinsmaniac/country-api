@@ -1,5 +1,14 @@
 package org.example.countryapi;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CountryRepository extends JpaRepository<Country, Long> {}
+import java.util.List;
+
+public interface CountryRepository extends JpaRepository<Country, Long> {
+
+    List<Country> findByRegion(
+            String region,
+            Sort sort
+    );
+}
