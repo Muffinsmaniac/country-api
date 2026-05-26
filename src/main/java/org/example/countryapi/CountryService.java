@@ -1,11 +1,8 @@
 package org.example.countryapi;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.aspectj.internal.lang.annotation.ajcDeclareParents;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.ApplicationStartupAware;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
