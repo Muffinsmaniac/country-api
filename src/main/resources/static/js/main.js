@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", function(){
             })
             .then(function(object) {
                 let list = document.getElementById("mainnavlist");
-                for(let country of object){
+
+                for(let country of object.content){
                     let li = document.createElement("li");
                     li.textContent = country.name + " " + country.population;
                     list.appendChild(li);

@@ -1,9 +1,9 @@
 package org.example.countryapi;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,29 +17,34 @@ public class CountryController {
         this.countryService = countryService;
     }
 
-    @GetMapping("")
-    public List<Country> getAllCountries(){
-        return countryService.getAllCountries();
+   @GetMapping("")
+    public Page<Country> getAllCountries(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="25")int size){
+        PageRequest pageRequest = PageRequest.of(page,size);
+        return countryService.getAllCountries(pageRequest);
     }
 
     @GetMapping("/name")
-    public List<Country> getCountriesNameSorted(){
-        return countryService.getCountriesNameSorted();
+    public Page<Country> getCountriesNameSorted(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="25")int size){
+        PageRequest pageRequest = PageRequest.of(page,size, Sort.by("name"));
+        return countryService.getCountriesNameSorted(pageRequest);
     }
 
     @GetMapping("/name/{region}")
-    public List<Country> getRegionNamesSorted(@PathVariable String region){
-        return countryService.getRegionNameSorted(region);
+    public Page<Country> getRegionNamesSorted(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="25")int size,@PathVariable String region){
+        PageRequest pageRequest = PageRequest.of(page,size, Sort.by("name"));
+        return countryService.getRegionNameSorted(region,pageRequest);
     }
 
     @GetMapping("/population")
-    public List<Country> getCountriesPopulationSorted(){
-        return countryService.getCountriesPopulationSorted();
+    public Page<Country> getCountriesPopulationSorted(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="25")int size){
+        PageRequest pageRequest = PageRequest.of(page,size, Sort.by("population"));
+        return countryService.getCountriesPopulationSorted(pageRequest);
     }
 
     @GetMapping("/population/{region}")
-    public List<Country> getRegionPopulationSorted(@PathVariable String region){
-        return countryService.getRegionPopulationSorted(region);
+    public Page<Country> getRegionPopulationSorted(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="25")int size,@PathVariable String region){
+        PageRequest pageRequest = PageRequest.of(page,size, Sort.by("population"));
+        return countryService.getRegionPopulationSorted(region,pageRequest);
     }
 
 

@@ -3,6 +3,8 @@ package org.example.countryapi;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -41,24 +43,24 @@ public class CountryService {
         System.out.println("Jobs done!");
     }
 
-    public List<Country> getAllCountries(){
-        return repository.findAll();
+    public Page<Country> getAllCountries(PageRequest pr){
+        return repository.findAll(pr);
     }
 
-    public List<Country> getCountriesNameSorted(){
-        return repository.findAll(Sort.by("name"));
+    public Page<Country> getCountriesNameSorted(PageRequest pr){
+        return repository.findAll(pr);
     }
 
-    public List<Country> getRegionNameSorted(String region){
-        return repository.findByRegion(region, Sort.by("name"));
+    public Page<Country> getRegionNameSorted(String region, PageRequest pr){
+        return repository.findByRegion(region, pr);
     }
 
-    public List<Country> getCountriesPopulationSorted(){
-        return repository.findAll(Sort.by("population"));
+    public Page<Country> getCountriesPopulationSorted(PageRequest pr){
+        return repository.findAll(pr);
     }
 
-    public List<Country> getRegionPopulationSorted(String region){
-        return repository.findByRegion(region, Sort.by("population"));
+    public Page<Country> getRegionPopulationSorted(String region, PageRequest pr){
+        return repository.findByRegion(region, pr);
     }
 
 }
