@@ -1,4 +1,4 @@
-package org.example.countryapi;
+package org.example.countryapi.repositories;
 
 import org.example.countryapi.entities.Country;
 import org.springframework.data.domain.Page;

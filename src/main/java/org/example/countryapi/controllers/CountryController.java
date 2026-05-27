@@ -1,5 +1,6 @@
-package org.example.countryapi;
+package org.example.countryapi.controllers;
 
+import org.example.countryapi.services.CountryService;
 import org.example.countryapi.entities.Country;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

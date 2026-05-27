@@ -1,8 +1,9 @@
-package org.example.countryapi;
+package org.example.countryapi.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.example.countryapi.entities.Country;
 import org.example.countryapi.entities.User;
+import org.example.countryapi.repositories.CountryRepository;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
@@ -22,14 +23,9 @@ public class CountryService {
                 .baseUrl("https://restcountries.com/v3.1")
                 .build();
     }
-    @EventListener
-    public void setUp(ApplicationStartedEvent event){
-        importCountries();
-        createUsers();
-        System.out.println("Jobs done!");
-    }
 
-    public void importCountries(){
+    @EventListener
+    public void importCountries(ApplicationStartedEvent event){
         JsonNode countries = restClient.get()
                 .uri("/all?fields=name,region,population")
                 .retrieve()
@@ -43,12 +39,9 @@ public class CountryService {
             Country newCountry = new Country(countryName,countryRegion,countryPopulation);
             repository.save(newCountry);
         }
+        System.out.println("Jobs done!");
     }
 
-    public void createUsers(){
-        User user = new User("Hasse");
-        User alsoUser = new User("Nisse");
-    }
 
     public Page<Country> getAllCountries(PageRequest pr){
         return repository.findAll(pr);
