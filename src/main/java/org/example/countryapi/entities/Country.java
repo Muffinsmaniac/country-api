@@ -1,4 +1,4 @@
-package org.example.countryapi;
+package org.example.countryapi.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
