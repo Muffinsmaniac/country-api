@@ -4,7 +4,6 @@ import org.example.countryapi.entities.Country;
 import org.example.countryapi.services.VisitedService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

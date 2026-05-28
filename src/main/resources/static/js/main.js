@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 for(let country of object.content){
                     let li = document.createElement("li");
-                    li.textContent = country.name + " " + country.population;
+                    li.textContent = country.name + " | Pop.: " + country.population + " | Visited:";
 
                     //Adding a checkbox to handle if the country is visited or not.
                     let checkbox = document.createElement("input");
