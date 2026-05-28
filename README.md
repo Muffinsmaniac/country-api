@@ -14,7 +14,7 @@ https://github.com/Muffinsmaniac/country-api
 5. Build and run the application by running this command in the Command Terminal:
 mvnw.cmd spring-boot:run
 
-4.Navigate to:
+4. Navigate to:
 http://localhost:8080
 
 5. Browse countries, filter by regions, make notes etc
