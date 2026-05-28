@@ -2,22 +2,26 @@
 document.addEventListener("DOMContentLoaded", function(){
     let currentPage= 0; //Keeping track on what page we are using.
     let currentSorting = "name";
-    let currentRegion ="all";
+    let currentFilter ="all";
     let descending = false;
     let visitedCountries = new Set(); //Since mocked user, the user has no visited countries when the app start.
 
     renderCountries()
 
+    document.getElementById("filter").addEventListener("change",function (){
+        currentFilter = this.value;
+        currentPage= 0;
+        renderCountries();
+    })
+
 
     document.getElementById('nameButton').addEventListener("click", function(){
-        currentRegion = document.getElementById("region").value;
         currentSorting = "name";
         currentPage= 0;
         renderCountries();
     })
 
     document.getElementById('popButton').addEventListener('click', function(){
-        currentRegion = document.getElementById("region").value;
         currentSorting = "population";
         currentPage= 0;
         renderCountries();
@@ -71,20 +75,10 @@ document.addEventListener("DOMContentLoaded", function(){
                             fetch(`http://localhost:8080/api/visited?userId=1&countryId=${country.id}`,{
                                 method: "POST"
                             })
+
                             visitedCountries.add(country.id);
-
                             //Add note and button
-                            let input = document.createElement("input");
-                            input.type = "text";
-                            input.placeholder= "Add a note!";
-                            input.id = `note-${country.id}`;
-                            let saveButton = document.createElement("button");
-                            saveButton.textContent = "Save";
-                            saveButton.id = `save-${country.id}`;
-                            saveButton.addEventListener("click", saveNote);
-                            li.appendChild(input);
-                            li.appendChild(saveButton);
-
+                            createNotes(country.id,li)
                         }
                         else{
                             visitedCountries.delete(country.id);
@@ -95,11 +89,16 @@ document.addEventListener("DOMContentLoaded", function(){
                             // Remove the input and button
                             document.getElementById(`note-${country.id}`)?.remove();
                             document.getElementById(`save-${country.id}`)?.remove();
+                            document.getElementById(`delete-${country.id}`)?.remove();
                         }
                     });
 
-                    checkbox.checked = visitedCountries.has(country.id); //Making sure the boxes stay checked if we change search
                     li.appendChild(checkbox);
+                    if(visitedCountries.has(country.id)){
+                        checkbox.checked = true; //Making sure the boxes stay checked if we change search
+                        createNotes(country.id, li);
+                    }
+
                     list.appendChild(li);
                 }
                 updatePageButtons(object);
@@ -107,9 +106,12 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     function urlBuilder(){
+        if(currentFilter === "Visited"){
+            return `http://localhost:8080/api/visited/1?page=${currentPage}&size=25&descending=${descending}`; //Hardcoded userId.
+        }
         let url = "http://localhost:8080/api/countries/"+ currentSorting;
-        if(currentRegion !== "all"){
-            url += "/" + currentRegion;
+        if(currentFilter !== "all"){
+            url += "/" + currentFilter;
         }
         url+= "?page="+currentPage + "&descending="+descending;
         return url;
@@ -120,8 +122,45 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById('nextButton').disabled = object.last;
     }
 
-    function saveNote(){
+    function createNotes(countryId, li){
+        let input = document.createElement("input");
+        input.type = "text";
+        input.placeholder= "Add a note!";
+        input.id = `note-${countryId}`;
+        if(visitedCountries.has(countryId)){
+            getNote(countryId,1).then(function (note){
+                input.value=note;
+            })
+        }
+        let saveButton = document.createElement("button");
+        saveButton.textContent = "Save";
+        saveButton.id = `save-${countryId}`;
+        saveButton.addEventListener("click", function(){
+            updateNote(countryId, input.value)
+        });
+        let deleteButton =document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.id = `delete-${countryId}`;
+        deleteButton.addEventListener("click",function (){
+            updateNote(countryId, ""); //Empty entry for the note!
+            input.value = "";
+        });
+        li.appendChild(input);
+        li.appendChild(saveButton);
+        li.appendChild(deleteButton);
+    }
 
+    function updateNote(countryId, note){
+        fetch(`http://localhost:8080/api/visited?userId=1&countryId=${countryId}&note=${note}`, {
+            method: "PATCH"
+        })
+    }
+
+    function getNote(countryId, userId){
+        return fetch(`http://localhost:8080/api/visited/${userId}/${countryId}`)
+            .then(function(response){
+                return response.text();
+            });
     }
 
 })

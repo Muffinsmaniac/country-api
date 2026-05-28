@@ -6,6 +6,9 @@ import org.example.countryapi.entities.VisitedCountry;
 import org.example.countryapi.repositories.CountryRepository;
 import org.example.countryapi.repositories.UserRepository;
 import org.example.countryapi.repositories.VisitedRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,12 +44,24 @@ public class VisitedService {
         visitedRepository.delete(visit);
     }
 
-    public List<Long> getVisitedCountryIds(long userId){
-        List<Long> countryIds = new ArrayList<>();
-        List<VisitedCountry> entries = visitedRepository.findByUserId(userId);
-        for(VisitedCountry entry : entries){
-            countryIds.add(entry.getCountry().getId());
+    public void addNote(long userId, long countryId, String note){
+        VisitedCountry visit = visitedRepository.findByUserIdAndCountryId(userId,countryId).orElseThrow();
+        visit.setNote(note);
+        visitedRepository.save(visit);
+    }
+
+    public Page<Country> getVisitedCountries(long userId, PageRequest pr){
+        Page<VisitedCountry> entries = visitedRepository.findByUserId(userId,pr);
+        return  entries.map(VisitedCountry::getCountry);
+    }
+
+    public String getVisitedCountryNote(long userId, long countryId){
+        VisitedCountry visit = visitedRepository.findByUserIdAndCountryId(userId,countryId).orElse(null);
+        if(visit == null || visit.getNote()== null){
+            return "";
+        }else{
+            return visit.getNote();
         }
-        return countryIds;
+
     }
 }
