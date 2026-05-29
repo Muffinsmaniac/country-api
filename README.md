@@ -18,3 +18,9 @@ mvnw.cmd spring-boot:run
 http://localhost:8080
 
 5. Browse countries, filter by regions, make notes etc
+
+To visit the database:
+http://localhost:8080/h2-console
+
+OpenAPI:
+http://localhost:8080/swagger-ui/index.html
