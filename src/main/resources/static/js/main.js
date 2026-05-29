@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", function(){
     let descending = false;
     let visitedCountries = new Set(); //Since mocked user, the user has no visited countries when the app start.
 
-    renderCountries()
+    //Initialize in case site is refreshed.
+    initializeVisitedCountries().then(renderCountries);
 
     document.getElementById("filter").addEventListener("change",function (){
         currentFilter = this.value;
@@ -160,6 +161,20 @@ document.addEventListener("DOMContentLoaded", function(){
         return fetch(`http://localhost:8080/api/visited/${userId}/${countryId}`)
             .then(function(response){
                 return response.text();
+            });
+    }
+
+    function initializeVisitedCountries(){
+        return fetch("http://localhost:8080/api/visited/1?page=0&size=25")
+            .then(response => response.json())
+            .then(function(object){
+                visitedCountries.clear();
+                for (let country of object.content){
+                    visitedCountries.add(country.id);
+                }
+            })
+            .catch(function(error){
+                console.error("Failed to load visited countries:", error);
             });
     }
 
